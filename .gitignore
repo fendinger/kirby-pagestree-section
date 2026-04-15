@@ -1,0 +1,16 @@
+# OS files
+.DS_Store
+
+# Log files
+*.log
+
+# Vendor files
+/node_modules
+/vendor
+package-lock.json
+
+# Cache and temporary files
+/.cache
+
+# Raw sources
+/raw
