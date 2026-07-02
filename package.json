@@ -1,6 +1,6 @@
 {
   "name": "kirby-pagestree-section",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Kirby 5 Panel plugin that displays pages as a collapsible tree view",
   "license": "MIT",
   "author": "Jens Fendinger",

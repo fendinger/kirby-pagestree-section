@@ -3,7 +3,7 @@
     "description": "Kirby CMS Panel plugin that displays pages as a collapsible tree view",
     "type": "kirby-plugin",
     "license": "MIT",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "authors": [
         {
             "name": "Jens Fendinger",
