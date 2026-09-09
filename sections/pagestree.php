@@ -256,7 +256,13 @@ return [
                 if (!$child) {
                     continue;
                 }
-                $hasChildren = $child->hasChildren() || $child->hasDrafts();
+                // Built eagerly (not gated on a raw hasChildren()/hasDrafts()
+                // check) so the expand arrow reflects what's actually there
+                // after templates/templatesIgnore filtering - a page whose
+                // only real child is filtered out must not show an arrow
+                // that expands into nothing.
+                $childTree   = $this->buildTree($child, $depth + 1);
+                $hasChildren = !empty($childTree);
 
                 $result[] = [
                     'id'          => $child->id(),
@@ -265,7 +271,7 @@ return [
                     'status'      => $child->status(),
                     'template'    => $child->intendedTemplate()->name(),
                     'hasChildren' => $hasChildren,
-                    'children'    => $hasChildren ? $this->buildTree($child, $depth + 1) : [],
+                    'children'    => $childTree,
                     'url'         => $child->panel()->url(),
                     'previewUrl'  => $child->previewUrl(),
                     'panelUrl'    => $child->panel()->url(true),
