@@ -113,6 +113,12 @@ export default {
   min-width: 0;
 }
 
+/* Kirby pulls list items with a sort handle left by the width of the handle.
+   Here the toggle sits in front of the item, so the pull would cover it. */
+.k-pagestree-node-item[data-layout="list"]:has(.k-item-sort-handle) {
+  margin-inline-start: 0;
+}
+
 /* Move sort-button left past the toggle area so it appears at the field edge */
 .k-pagestree-node-item .k-sort-button {
   left: calc(-1 * var(--button-width) - var(--field-input-height, 2.25rem)) !important;
