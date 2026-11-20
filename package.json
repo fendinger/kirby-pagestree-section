@@ -1,12 +1,15 @@
 {
   "name": "kirby-pagestree-section",
   "version": "1.0.1",
-  "description": "Kirby 5 Panel plugin that displays pages as a collapsible tree view",
+  "description": "Kirby 6 Panel plugin that displays pages as a collapsible tree view",
   "license": "MIT",
   "author": "Jens Fendinger",
   "homepage": "https://github.com/fendinger/kirby-pagestree-section",
   "scripts": {
-    "dev": "npx -y kirbyup src/index.js --watch",
-    "build": "npx -y kirbyup src/index.js"
+    "dev": "kirbyup src/index.js --watch",
+    "build": "kirbyup src/index.js"
+  },
+  "devDependencies": {
+    "kirbyup": "^4.0.0-beta.2"
   }
 }
