@@ -2,20 +2,20 @@
 
 # Kirby Pagestree Section
 
-A Kirby CMS Panel plugin that provides a `pagestree` section type. It displays pages as a collapsible tree view — similar to the native `pages` section, but with recursive rendering of all subpages as a nested, expandable tree.
+A Kirby CMS Panel plugin that provides a `pagestree` field type. It displays pages as a collapsible tree view — similar to the native `pages` field, but with recursive rendering of all subpages as a nested, expandable tree.
 
 ## Features
 
 - Collapsible tree view with toggle arrows
 - Native Kirby look & feel using `k-item` components
 - Drag & drop sorting for listed pages (sort handle at the left edge)
-- Full context menu matching the native pages section (Open, Preview, Rename, Change URL, Change Status, Change Position, Change Template, Move, Duplicate, Delete)
+- Full context menu matching the native pages field (Open, Preview, Rename, Change URL, Change Status, Change Position, Change Template, Move, Duplicate, Delete)
 - Status indicators with native Kirby themes (draft, unlisted, listed)
 - Client-side search/filter across all tree levels (parents stay visible when children match)
 - Pagination for root-level pages
 - Multi-language support
 - Open/closed state persisted in sessionStorage
-- Supports all properties from the native [pages section](https://getkirby.com/docs/reference/panel/sections/pages)
+- Supports all properties from the native [pages field](https://getkirby.com/docs/reference/panel/fields/pages)
 - Automatic reload after panel actions (rename, delete, status change, etc.)
 
 ## Installation
@@ -32,19 +32,23 @@ Download and copy this plugin to `/site/plugins/kirby-pagestree-section`.
 
 ## Usage
 
-Add the section to any blueprint:
+Add the field to any blueprint:
 
 ```yaml
-sections:
+fields:
   tree:
     type: pagestree
     label: Page Tree
 ```
 
+### Upgrading from Kirby 5
+
+Kirby 6 has no plugin sections anymore, so `pagestree` is a field now. Kirby shows `Invalid section type ("pagestree")` until you move it from `sections:` to `fields:` (`headline` becomes `label`). The options stay the same. Use version 1 of this plugin with Kirby 5.
+
 ### Full example
 
 ```yaml
-sections:
+fields:
   tree:
     type: pagestree
     label: Site Tree
@@ -68,13 +72,13 @@ sections:
 
 ## Properties
 
-All properties from the native [pages section](https://getkirby.com/docs/reference/panel/sections/pages) are supported, plus one additional property:
+All properties from the native [pages field](https://getkirby.com/docs/reference/panel/fields/pages) are supported, plus one additional property:
 
 | Property | Type | Default | Description |
 |---|---|---|---|
 | `maxDepth` | `int` | `null` | Maximum nesting depth (`null` = unlimited) |
 
-### Inherited from pages section
+### Inherited from the pages field
 
 | Property | Type | Default | Description |
 |---|---|---|---|
@@ -83,11 +87,10 @@ All properties from the native [pages section](https://getkirby.com/docs/referen
 | `create` | `mixed` | `null` | Templates allowed for new pages, or `false` to disable |
 | `empty` | `string` | – | Text for the empty state |
 | `flip` | `bool` | `false` | Reverse sort order |
-| `headline` | `string` | – | Section headline |
-| `help` | `string` | – | Help text below the section |
+| `help` | `string` | – | Help text below the field |
 | `image` | `mixed` | `[]` | Image/icon configuration |
 | `info` | `string` | – | Info text template |
-| `label` | `string` | – | Section label (alias for headline) |
+| `label` | `string` | – | Field label |
 | `layout` | `string` | `list` | *Not applicable (tree layout)* |
 | `limit` | `int` | `20` | Number of root pages per page |
 | `max` | `int` | `null` | Maximum number of pages |

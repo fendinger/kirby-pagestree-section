@@ -1,7 +1,7 @@
-import PagestreeSection from "./components/sections/PagestreeSection.vue";
+import PagestreeField from "./components/PagestreeField.vue";
 
 panel.plugin("fendinger/pagestree-section", {
-    sections: {
-        pagestree: PagestreeSection
+    fields: {
+        pagestree: PagestreeField
     }
 });

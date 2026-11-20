@@ -16,13 +16,13 @@
         "kirby",
         "kirby-plugin",
         "panel",
-        "section",
+        "field",
         "tree",
         "pages"
     ],
     "require": {
         "getkirby/composer-installer": "^1.2",
-        "getkirby/cms": "^5.0"
+        "getkirby/cms": "^6.0.0-rc.1"
     },
     "config": {
         "allow-plugins": {
