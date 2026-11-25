@@ -382,7 +382,7 @@ export default {
 
       this.isProcessing = true;
       const item = e[action].element;
-      const position = e[action].newIndex + 1;
+      const position = e[action].newIndex + 1 + (this.pagination.offset || 0);
 
       try {
         await this.$api.pages.changeStatus(item.id, "listed", position);

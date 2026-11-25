@@ -14,3 +14,11 @@ package-lock.json
 
 # Raw sources
 /raw
+
+# Active Panel bundle, written from dist/k5 or dist/k6 on boot
+/index.js
+/index.css
+/index.dev.js
+/index.dev.mjs
+/index.js.tmp
+/index.css.tmp

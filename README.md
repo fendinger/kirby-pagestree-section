@@ -2,7 +2,9 @@
 
 # Kirby Pagestree Section
 
-A Kirby CMS Panel plugin that provides a `pagestree` section type. It displays pages as a collapsible tree view — similar to the native `pages` section, but with recursive rendering of all subpages as a nested, expandable tree.
+A Kirby CMS Panel plugin that displays pages as a collapsible tree view — similar to the native pages list, but with recursive rendering of all subpages as a nested, expandable tree.
+
+The same release runs on Kirby 5 and Kirby 6. Kirby 5 keeps the `pagestree` section. Kirby 6 has no custom sections, so the plugin registers a `pagestree` field there and still accepts existing `sections` blueprints.
 
 ## Features
 
@@ -15,8 +17,13 @@ A Kirby CMS Panel plugin that provides a `pagestree` section type. It displays p
 - Pagination for root-level pages
 - Multi-language support
 - Open/closed state persisted in sessionStorage
-- Supports all properties from the native [pages section](https://getkirby.com/docs/reference/panel/sections/pages)
+- Same blueprint options as the native [pages section](https://getkirby.com/docs/reference/panel/sections/pages), plus `maxDepth`
 - Automatic reload after panel actions (rename, delete, status change, etc.)
+
+## Requirements
+
+- Kirby 5 or Kirby 6
+- PHP 8.2 to 8.6
 
 ## Installation
 
@@ -32,10 +39,19 @@ Download and copy this plugin to `/site/plugins/kirby-pagestree-section`.
 
 ## Usage
 
-Add the section to any blueprint:
+Add it to any blueprint. This works on Kirby 5 and Kirby 6:
 
 ```yaml
 sections:
+  tree:
+    type: pagestree
+    label: Page Tree
+```
+
+On Kirby 6 you can also place it directly under `fields`. `label` replaces `headline` there; `headline` is still accepted.
+
+```yaml
+fields:
   tree:
     type: pagestree
     label: Page Tree
@@ -66,9 +82,28 @@ sections:
     help: Drag listed pages to reorder them
 ```
 
+## Kirby 5 and Kirby 6
+
+One package covers both versions. Install the same plugin; there is no second package for Kirby 6.
+
+Kirby 5 registers `pagestree` as a section. Kirby 6 no longer has custom sections, so the plugin registers a field of the same type. A blueprint written for Kirby 5 keeps working: while Kirby 6 loads it, a `sections` entry with `type: pagestree` is mapped onto that field.
+
+`label` is the Kirby 6 name for the title above the tree. `headline` still works on both versions and is used as `label` when `label` is omitted.
+
+`columns`, `layout` and `size` belong to the native pages section. The tree ignores them.
+
+A page or the site can be chosen in the move dialog when its blueprint lists its own children with `pagestree`. A `parent` query that points at another model does not make the current page a move target.
+
+## Notes
+
+- Pagination applies to the root level only. Child lists are complete.
+- Search filters in the browser, so a matching child keeps its parents visible. Sorting pauses while a search term is set.
+- Drag and drop is available for listed pages. It stays off with `sortable: false`, with `sortBy`, `query` or `flip`, and when `status` is `draft` or `unlisted`.
+- `maxDepth` limits how deep the tree is built. `null` means no limit.
+
 ## Properties
 
-All properties from the native [pages section](https://getkirby.com/docs/reference/panel/sections/pages) are supported, plus one additional property:
+The options below match the native [pages section](https://getkirby.com/docs/reference/panel/sections/pages), plus `maxDepth`. `columns`, `layout` and `size` are ignored.
 
 | Property | Type | Default | Description |
 |---|---|---|---|
@@ -83,11 +118,11 @@ All properties from the native [pages section](https://getkirby.com/docs/referen
 | `create` | `mixed` | `null` | Templates allowed for new pages, or `false` to disable |
 | `empty` | `string` | – | Text for the empty state |
 | `flip` | `bool` | `false` | Reverse sort order |
-| `headline` | `string` | – | Section headline |
-| `help` | `string` | – | Help text below the section |
+| `headline` | `string` | – | Title above the tree. On Kirby 6 this fills `label` when `label` is omitted |
+| `help` | `string` | – | Help text below the tree |
 | `image` | `mixed` | `[]` | Image/icon configuration |
 | `info` | `string` | – | Info text template |
-| `label` | `string` | – | Section label (alias for headline) |
+| `label` | `string` | – | Title above the tree. Preferred name on Kirby 6 |
 | `layout` | `string` | `list` | *Not applicable (tree layout)* |
 | `limit` | `int` | `20` | Number of root pages per page |
 | `max` | `int` | `null` | Maximum number of pages |
@@ -103,6 +138,16 @@ All properties from the native [pages section](https://getkirby.com/docs/referen
 | `templates` | `array` | `null` | Filter by multiple templates |
 | `templatesIgnore` | `array` | `null` | Exclude templates |
 | `text` | `string` | `{{ page.title }}` | Display text template |
+
+## Development
+
+The Panel bundle depends on the Kirby version. Kirby 5 loads a classic script, Kirby 6 an ES module. `npm run build` writes both into `dist/k5` and `dist/k6`. When the site boots, the plugin copies the matching files to `index.js` and `index.css`. Those two files are generated and are not part of the repository.
+
+```
+npm run dev       # Kirby 5
+npm run dev:k6    # Kirby 6
+npm run build     # dist/k5 and dist/k6
+```
 
 ## Support
 

@@ -1,5 +1,6 @@
 <?php
 
+use Fendinger\PagestreeSection\Tree;
 use Kirby\Cms\Blueprint;
 use Kirby\Cms\Page;
 use Kirby\Cms\Site;
@@ -195,82 +196,23 @@ return [
     ],
     'methods' => [
         'buildTree' => function ($parent, int $depth): array {
-            if ($this->maxDepth !== null && $depth >= $this->maxDepth) {
-                return [];
-            }
-
-            // Query-Filter (alternative to status)
-            if ($this->query && $depth === 0) {
-                $children = $parent->query($this->query);
-            } else {
-                if ($this->status === 'listed') {
-                    $children = $parent->children()->listed();
-                } elseif ($this->status === 'draft') {
-                    $children = $parent->drafts();
-                } elseif ($this->status === 'unlisted') {
-                    $children = $parent->children()->unlisted();
-                } elseif ($this->status === 'published') {
-                    $children = $parent->children();
-                } else {
-                    $children = $parent->childrenAndDrafts();
-                }
-            }
-
-            // Template-Filter
-            if (!empty($this->templates)) {
-                $children = $children->filter(function ($child) {
-                    return in_array($child->intendedTemplate()->name(), $this->templates);
-                });
-            }
-
-            // Template-Ignore-Filter
-            if (!empty($this->templatesIgnore)) {
-                $children = $children->filter(function ($child) {
-                    return !in_array($child->intendedTemplate()->name(), $this->templatesIgnore);
-                });
-            }
-
-            // Search
-            if ($searchterm = $this->searchterm()) {
-                $children = $children->search($searchterm);
-            }
-
-            // Sortierung
-            if ($this->sortBy) {
-                $parts = explode(' ', $this->sortBy);
-                $children = $children->sortBy($parts[0], $parts[1] ?? 'asc');
-            }
-
-            // Flip
-            if ($this->flip === true && !$this->searchterm()) {
-                $children = $children->flip();
-            }
-
-            $result = [];
-
-            if (!$children) {
-                return $result;
-            }
-
-            foreach ($children as $child) {
-                if (!$child) {
-                    continue;
-                }
-                // Built eagerly (not gated on a raw hasChildren()/hasDrafts()
-                // check) so the expand arrow reflects what's actually there
-                // after templates/templatesIgnore filtering - a page whose
-                // only real child is filtered out must not show an arrow
-                // that expands into nothing.
-                $childTree   = $this->buildTree($child, $depth + 1);
-                $hasChildren = !empty($childTree);
-
-                $result[] = [
+            return Tree::build($parent, $depth, [
+                'flip'            => $this->flip === true,
+                'maxDepth'        => $this->maxDepth,
+                'query'           => $this->query,
+                'searchterm'      => $this->searchterm(),
+                'sortBy'          => $this->sortBy,
+                'status'          => $this->status,
+                'templates'       => $this->templates,
+                'templatesIgnore' => $this->templatesIgnore,
+            ], function ($child, array $childTree): array {
+                return [
                     'id'          => $child->id(),
                     'title'       => $child->content()->title()->value(),
                     'slug'        => $child->slug(),
                     'status'      => $child->status(),
                     'template'    => $child->intendedTemplate()->name(),
-                    'hasChildren' => $hasChildren,
+                    'hasChildren' => $childTree !== [],
                     'children'    => $childTree,
                     'url'         => $child->panel()->url(),
                     'previewUrl'  => $child->previewUrl(),
@@ -291,9 +233,7 @@ return [
                         'preview'        => $child->permissions()->can('preview'),
                     ]
                 ];
-            }
-
-            return $result;
+            });
         },
         'countTree' => function (array $pages): int {
             $count = count($pages);
